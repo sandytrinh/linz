@@ -1,4 +1,9 @@
-"use strict";
+'use strict';
+
+// Allow Node.js to require and load `.marko` files.
+require('marko/node-require');
+
+const markoExpress = require('marko/express');
 
 /**
  * Load required modules
@@ -522,6 +527,8 @@ Linz.prototype.bootstrapExpress = function (cb) {
     // setup admin static routes
     this.app.use(this.get('admin path') + '/public/', express.static(path.resolve(__dirname, 'public')));
 
+    // Enable res.marko(template, data).
+    this.app.use(markoExpress());
     this.app.engine('jade', require('jade').__express);
     this.app.set('view engine', 'jade');
 
