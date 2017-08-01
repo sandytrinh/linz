@@ -37,6 +37,74 @@
 
     });
 
+    var alwaysOnFilters = $('a[data-filter-type="alwaysOn"]');
+    var selectedFilters = $('.selectedFilters');
+
+    $.each(alwaysOnFilters, function renderFilters () {
+
+        var filter = $(this);
+        var filterFormControl = filter.siblings('.controlField').html();
+        var filterText = filter.html();
+        var filterVal = filter.attr('data-filter-field');
+        var filterIndex = selectedFilters.val().split(',').indexOf(filterVal);
+
+        var activeFilters = [];
+
+        if (filterIndex < 0) {
+
+            if (linz.isTemplateSupported()) {
+
+                var content = document.querySelector('#filter').content.cloneNode(true);
+
+                // update template with filter content
+                content.querySelector('.filter-name').textContent = filterText;
+                content.querySelector('.filter-control').innerHTML = content.querySelector('.filter-control').innerHTML + filterFormControl;
+                content.querySelector('.fa-times').setAttribute('data-filter-field', filter.attr('data-filter-field'));
+                document.querySelector('.filter-list').appendChild(document.importNode(content, true));
+
+            } else {
+
+                // fallback support for browsers that don't support html5 template tag
+                var filterOption = $('#filter').clone();
+                filterOption.find('.filter-name').html(filterText);
+                filterOption.find('.filter-control').append(filterFormControl);
+                filterOption.find('.fa-times').attr('data-filter-field', filter.attr('data-filter-field'));
+                $('.filter-list').append(filterOption.html());
+
+            }
+
+            // determine if a multiselect was added to the dom, if so, apply the plugin
+            $('.multiselect', $('.filter-list').children().last()).multiselect({
+                buttonContainer: '<div class="btn-group btn-group-multiselect" />'
+            });
+
+            if (selectedFilters.val()) {
+                activeFilters = selectedFilters.val().split();
+            }
+
+            // Only add the filter once.
+            if (activeFilters.indexOf(filterVal) < 0) {
+                activeFilters.push(filterVal);
+            }
+
+            selectedFilters.val(activeFilters.join());
+
+        }
+
+        filtersAreDirty = true;
+
+        toggleFilterBox('show');
+
+        assignRemoveButton();
+        linz.loadDatepicker();
+
+        // Remove the filter from the list.
+        filter.remove();
+
+        return;
+
+    });
+
     $('.control-addFilter').click(function () {
 
         var filter = $(this),
