@@ -7,6 +7,7 @@
 - Allow custom scripts and styles through the `scripts` and `styles` Linz options. These should be functions that take a `req` object and return a promise that resolves with an array of scripts and styles. The array should contain objects with the same properties as the HTML equivalents.
 - Now passing `form` and `user` to `transform` function.
 - Now passing `record` to `transpose` function.
+- Model filters not allow an `alwaysOn` property to enable permanent filters. This should be set to a boolean `true` or `false`.
 
 ## v1.0.0-9.0.3 (28 June 2017)
 
